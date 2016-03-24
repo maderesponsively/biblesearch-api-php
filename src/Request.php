@@ -1,5 +1,7 @@
 <?php
 
+namespace BiblesearchApi;
+
 /**
  * @version $Id$
  * @author  Brian Smith <wisecounselor@gmail.com>
@@ -7,11 +9,11 @@
  */
 
 /**
- * ABS_Api includes the core classes.
+ * Api includes the core classes.
  */
 //require_once 'Api.php';
 
-class ABS_Request {
+class Request {
     /**
      * Number of seconds to wait while connecting to the server.
      */
@@ -61,11 +63,11 @@ class ABS_Request {
     /**
      * Constructor.
      *
-     * @param  object ABS_API $api
+     * @param  object API $api
      * @param  string $method The name of the method.
      * @param  array $params Associative array of parameter name/value pairs.
      */
-    public function __construct(ABS_Api $api, $url, $params = array())
+    public function __construct(Api $api, $url, $params = array())
     {
         //print "Request.php __construct" . $url;
         //print_r($params);
@@ -91,7 +93,7 @@ class ABS_Request {
      * @param   integer $timeout The total number of seconds, including the
      *          wait for the initial connection, wait for a request to complete.
      * @return  string
-     * @throws  ABS_ConnectionException
+     * @throws  ConnectionException
      */
     static function submitRequest($key, $url, $throwOnFail = true)
     {
@@ -113,7 +115,7 @@ class ABS_Request {
             return $result;
         } else {
             if ($throwOnFail) {
-                $ex = new ABS_ConnectionException('Request failed. ' . curl_error($ch), curl_errno($ch), $url);
+                $ex = new ConnectionException('Request failed. ' . curl_error($ch), curl_errno($ch), $url);
                 throw $ex;
             }
             curl_close($ch);
@@ -150,7 +152,7 @@ class ABS_Request {
             return $result;
         } else {
             if ($throwOnFail) {
-                $ex = new ABS_ConnectionException(
+                $ex = new ConnectionException(
                 'Request failed. ' . curl_error($ch), curl_errno($ch), $url);
                 throw $ex;
             }
@@ -167,7 +169,7 @@ class ABS_Request {
      * @param   integer $timeout The total number of seconds, including the
      *          wait for the initial connection, wait for a request to complete.
      * @return  string
-     * @throws  ABS_ConnectionException
+     * @throws  ConnectionException
      */
     static function doPut($key, $url, $data, $throwOnFail = true) {
         // make sure xml is properly formed
@@ -199,7 +201,7 @@ class ABS_Request {
      * @param   integer $timeout The total number of seconds, including the
      *          wait for the initial connection, wait for a request to complete.
      * @return  boolean
-     * @throws  ABS_ConnectionException
+     * @throws  ConnectionException
      */
     static function doDelete($key, $url, $data='', $throwOnFail = true) {
         $ch = curl_init();
@@ -223,9 +225,9 @@ class ABS_Request {
         return false;
     }
     /**
-     * Return a reference to this Request's ABS_Api.
+     * Return a reference to this Request's Api.
      *
-     * @return  object ABS_Api
+     * @return  object Api
      * @see     __construct()
      */
     public function getApi()
@@ -317,7 +319,7 @@ class ABS_Request {
      * The Api will provide the key and secret and token values.
      *
      * @return  string
-     * @see     buildUrl, ABS_Api::getKey()
+     * @see     buildUrl, Api::getKey()
      * @uses    encodeParams() to create a URL.
      */
     public function buildUrl()
@@ -334,11 +336,11 @@ class ABS_Request {
     /**
      * Execute a ABS API method.
      *
-     * @return  object ABS_Response
-     * @throws  ABS_XmlParseException, ABS_ConnectionException
+     * @return  object Response
+     * @throws  XmlParseException, ConnectionException
      * @uses    submitRequest() to submit the request.
-     * @uses    ABS_Cache to load and cached requests.
-     * @uses    ABS_Response to return results.
+     * @uses    Cache to load and cached requests.
+     * @uses    Response to return results.
      */
     public function execute($allowCache = false, $throwOnFail = true)
     {
@@ -347,18 +349,18 @@ class ABS_Request {
         switch($this->_restMethod) {
             case 'PUT':
                 $result = self::doPut($api->getKey(),$url, $this->_requestData, $throwOnFail);
-                return new ABS_Response($result, $throwOnFail);
+                return new Response($result, $throwOnFail);
                 break;
             case 'POST':
                 $result = self::doPost($api->getKey(), $url, $this->_requestData, $throwOnFail);
-                return new ABS_Response($result, $throwOnFail);
+                return new Response($result, $throwOnFail);
                 break;
             case 'DELETE':
                 $result = self::doDelete($api->getKey(), $url, $this->_requestData, $throwOnFail);
                 break;
             default:
                 $result = self::submitRequest($api->getKey(), $url, $throwOnFail);
-                return new ABS_Response($result, $throwOnFail);
+                return new Response($result, $throwOnFail);
         }
     }
     public function setRestMethod($method) {

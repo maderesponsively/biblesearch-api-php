@@ -1,5 +1,7 @@
 <?php
 
+namespace BiblesearchApi;
+
 /**
  * @version $Id$
  * @author  Brian Smith <wisecounselor@gmail.com>
@@ -16,19 +18,19 @@
  * @author  Brian Smith <wisecounselor@gmail.com>
  * @package ABS
  */
-abstract class ABS_Base {
+abstract class Base {
     /**
      * Reference to the API.
      *
      * Technically we could pull this from $_request but it makes sense to
      * cache it.
      *
-     * @var object ABS_Api
+     * @var object Api
      * @see __construct(), getApi()
      */
     protected $_api = null;
     /**
-     * @var object ABS_Request
+     * @var object Request
      * @see __construct(), createRequest(), getRequest()
      */
     protected $_request = null;
@@ -151,20 +153,20 @@ abstract class ABS_Base {
      *
      * Construct a base object for getting XML from the ABS api
      *
-     * @param   object ABS_API $api
+     * @param   object API $api
      * @param   string $responseElement Name of the XML element in the response
      *          that defines this object.
      */
-    function __construct(ABS_Api $api, $responseElement) {
+    function __construct(Api $api, $responseElement) {
         $this->_api =& $api;
         $this->_respElement = $responseElement;
     }
 
     /**
-     * Create a ABS_Request object that will request the XML for this object.
+     * Create a Request object that will request the XML for this object.
      *
      * @param   string method - method being executed for the request
-     * @return  object ABS_Request
+     * @return  object Request
      */
     protected function &createRequest($method) {
         $request = $this->_api->createRequest(
@@ -177,7 +179,7 @@ abstract class ABS_Base {
             $request->setRequestData($this->_requestData);
         }
         if (is_null($request)) {
-            throw new ABS_Exception('Could not create a Request.');
+            throw new Exception('Could not create a Request.');
         } else {
             $this->_request = $request;
             return $request;
@@ -190,7 +192,7 @@ abstract class ABS_Base {
      * @param   boolean $allowCached If a cached result exists, should it be
      *          returned?
      * @return  object SimpleXMLElement
-     * @throws  ABS_ConnectionException, ABS_XmlParseException
+     * @throws  ConnectionException, XmlParseException
      */
     protected function requestXml($method) {
         $response = $this->createRequest($method)->execute($this->_allowCached, $this->_throwOnFail);
@@ -236,18 +238,18 @@ abstract class ABS_Base {
     abstract protected function getUrl($method);
     
     /**
-     * Return a reference to this object's ABS_Api.
+     * Return a reference to this object's Api.
      *
-     * @return  object ABS_Api
+     * @return  object Api
      * @see     __construct()
      */
     public function &getApi() {
         return $this->_api;
     }
     /**
-     * Return the ABS_Request the object is based on.
+     * Return the Request the object is based on.
      *
-     * @return  object ABS_Request
+     * @return  object Request
      * @see     __construct()
      */
     public function getRequest() {
@@ -368,12 +370,12 @@ abstract class ABS_Base {
     }
     protected function __validateVersion() {
         if (empty($this->_version_id) || is_null($this->_version_id)) {
-            throw new ABS_Exception('The Version cannot be null or empty');
+            throw new Exception('The Version cannot be null or empty');
         }
     }
     protected function __validateChapter() {
         if (empty($this->_chapter) || is_null($this->_chapter)) {
-            throw new ABS_Exception('The Chapter cannot be null or empty');
+            throw new Exception('The Chapter cannot be null or empty');
         }
         if (! is_int($this->_chapter)) {
             throw new Exception('The chapter must be an integer value');
@@ -381,7 +383,7 @@ abstract class ABS_Base {
     }
     protected function __validateBook() {
         if (empty($this->_book_id) || is_null($this->_book_id)) {
-            throw new ABS_Exception('The Book ID cannot be null or empty');
+            throw new Exception('The Book ID cannot be null or empty');
         }
     }
     protected function __validateAll() {
