@@ -4,7 +4,7 @@
     "minimum-stability": "dev",
     "require": {
     },
-    "license": "http://bibles.org/pages/api/documentation/fums",
+    "license": "proprietary",
     "autoload": {
     "psr-4": {
       "BiblesearchApi\\": "src/"
