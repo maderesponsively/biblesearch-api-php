@@ -4,7 +4,6 @@
     "minimum-stability": "dev",
     "require": {
     },
-    "license": "proprietary",
     "autoload": {
     "psr-4": {
       "BiblesearchApi\\": "src/"
